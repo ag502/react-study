@@ -73,19 +73,19 @@ class App extends Component {
       );
     }
 
-    let classes = [];
+    let assingnedClasses = [];
     if (this.state.persons.length <= 2) {
-      classes.push("red");
+      assingnedClasses.push("red");
     }
     if (this.state.persons.length <= 1) {
-      classes.push("bold");
+      assingnedClasses.push("bold");
     }
 
     return (
       <div className="App">
         <h1>Hi, I'm a React App</h1>
-        <p className={classes}>This is really Work</p>
-        <button className="button" onClick={this.togglePersonsHandler}>
+        <p>This is really Work</p>
+        <button className="Button" onClick={this.togglePersonsHandler}>
           Switch Name
         </button>
         {persons}
