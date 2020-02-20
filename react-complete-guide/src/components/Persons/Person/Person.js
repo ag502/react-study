@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import "./Person.css";
 import styled from "styled-components";
 
@@ -15,17 +15,36 @@ const StyledDiv = styled.div`
   }
 `;
 
-const person = props => {
-  console.log("[Person.js] render");
-  return (
-    <StyledDiv>
-      <p onClick={props.click}>
-        I'm a {props.name} and I am {props.age} years old!
-      </p>
-      <p>{props.children}</p>
-      <input type="text" onChange={props.changed} value={props.name} />
-    </StyledDiv>
-  );
-};
+// const person = props => {
+//   console.log("[Person.js] render");
+//   return (
+//     <StyledDiv>
+//       <p onClick={props.click}>
+//         I'm a {props.name} and I am {props.age} years old!
+//       </p>
+//       <p>{props.children}</p>
+//       <input type="text" onChange={props.changed} value={props.name} />
+//     </StyledDiv>
+//   );
+// };
 
-export default person;
+class Person extends Component {
+  render() {
+    console.log("[Person.js] render");
+    return (
+      <StyledDiv>
+        <p onClick={this.props.click}>
+          I'm a {this.props.name} and I am {this.props.age} years old!
+        </p>
+        <p>{this.props.children}</p>
+        <input
+          type="text"
+          onChange={this.props.changed}
+          value={this.props.name}
+        />
+      </StyledDiv>
+    );
+  }
+}
+
+export default Person;
