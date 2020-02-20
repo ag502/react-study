@@ -1,7 +1,6 @@
 import React, { Component, useState } from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import Person from "./Person/Person";
+import Person from "../components/Persons/Person/Person";
 
 class App extends Component {
   state = {
