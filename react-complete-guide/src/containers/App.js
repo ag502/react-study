@@ -3,6 +3,7 @@ import "./App.css";
 import Person from "../components/Persons/Person/Person";
 import Persons from "../components/Persons/Persons";
 import Cockpit from "../components/Cockpit/Cockpit";
+import WithClass from "../hoc/WithClass";
 
 class App extends Component {
   constructor(props) {
@@ -94,7 +95,7 @@ class App extends Component {
     }
 
     return (
-      <div className="App">
+      <>
         <button
           onClick={() => {
             this.setState({ showCockpit: false });
@@ -110,7 +111,7 @@ class App extends Component {
           />
         )}
         {persons}
-      </div>
+      </>
     );
   }
 }
@@ -160,4 +161,4 @@ class App extends Component {
 //   );
 // };
 
-export default App;
+export default WithClass(App, "App");

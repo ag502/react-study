@@ -3,6 +3,7 @@ import "./Person.css";
 import styled from "styled-components";
 import Aux from "../../../hoc/Auxiliary";
 import Auxiliary from "../../../hoc/Auxiliary";
+import WithClass from "../../../hoc/WithClass";
 
 const StyledDiv = styled.div`
   width: 60%;
@@ -34,7 +35,7 @@ class Person extends Component {
   render() {
     console.log("[Person.js] render");
     return (
-      <Auxiliary>
+      <>
         <p onClick={this.props.click}>
           I'm a {this.props.name} and I am {this.props.age} years old!
         </p>
@@ -44,9 +45,9 @@ class Person extends Component {
           onChange={this.props.changed}
           value={this.props.name}
         />
-      </Auxiliary>
+      </>
     );
   }
 }
 
-export default Person;
+export default WithClass(Person, "Person");
