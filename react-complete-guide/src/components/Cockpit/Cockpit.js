@@ -1,12 +1,15 @@
-import React, { useEffect, Component, useMemo } from "react";
+import React, { useRef, useEffect, Component, useMemo } from "react";
 import "./Cockpit.css";
 
 const Cockpit = props => {
+  const toggleBtnRef = useRef(null);
+
   useEffect(() => {
     console.log("[Cockpit.js] useEffect");
     const timer = setTimeout(() => {
       alert("Saved data to Cloud!");
     }, 1000);
+    toggleBtnRef.current.click();
     return () => {
       clearTimeout(timer);
       console.log("[Cockpit.js] cleanup work in useEffect");
@@ -39,7 +42,7 @@ const Cockpit = props => {
     <div className="Cockpit">
       <h1>Hi, I'm a React App</h1>
       <p>This is really Work</p>
-      <button className={btnClass} onClick={props.click}>
+      <button className={btnClass} ref={toggleBtnRef} onClick={props.click}>
         Switch Name
       </button>
     </div>
