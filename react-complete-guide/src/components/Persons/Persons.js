@@ -31,6 +31,10 @@ class Persons extends Component {
     console.log("[Persons.js] componentDidMount");
   }
 
+  componentWillUnmount() {
+    console.log("[Persons.js] Comopnent will Unmount");
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     console.log("[Persons.js] shouldComponentUpdate");
     return true;
