@@ -33,6 +33,15 @@ const StyledDiv = styled.div`
 // };
 
 class Person extends Component {
+  constructor(props) {
+    super(props);
+    this.inputElemnet = React.createRef();
+  }
+
+  componentDidMount() {
+    this.inputElemnet.current.focus();
+  }
+
   render() {
     console.log("[Person.js] render");
     return (
@@ -43,6 +52,10 @@ class Person extends Component {
         <p>{this.props.children}</p>
         <input
           type="text"
+          // ref={inputEl => {
+          //   this.inputElemnet = inputEl;
+          // }}
+          ref={this.inputElemnet}
           onChange={this.props.changed}
           value={this.props.name}
         />
