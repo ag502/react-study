@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import Person from "./Person/Person";
 
 // const Persons = props => {
@@ -37,7 +37,11 @@ class Persons extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     console.log("[Persons.js] shouldComponentUpdate");
-    if (nextProps.persons !== this.props.persons) {
+    if (
+      nextProps.persons !== this.props.persons ||
+      nextProps.clicked !== this.props.clicked ||
+      nextProps.changed !== this.props.changed
+    ) {
       return true;
     } else {
       return false;
