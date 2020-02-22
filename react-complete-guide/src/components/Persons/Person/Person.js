@@ -31,19 +31,18 @@ const StyledDiv = styled.div`
 class Person extends Component {
   render() {
     console.log("[Person.js] render");
-    return (
-      <StyledDiv>
-        <p onClick={this.props.click}>
-          I'm a {this.props.name} and I am {this.props.age} years old!
-        </p>
-        <p>{this.props.children}</p>
-        <input
-          type="text"
-          onChange={this.props.changed}
-          value={this.props.name}
-        />
-      </StyledDiv>
-    );
+    return [
+      <p key="il" onClick={this.props.click}>
+        I'm a {this.props.name} and I am {this.props.age} years old!
+      </p>,
+      <p key="i2">{this.props.children}</p>,
+      <input
+        key="i3"
+        type="text"
+        onChange={this.props.changed}
+        value={this.props.name}
+      />
+    ];
   }
 }
 
