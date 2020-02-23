@@ -1,17 +1,18 @@
 import React, { useRef, useEffect, Component, useMemo } from "react";
 import "./Cockpit.css";
+import AuthContext from "../../context/auth-context";
 
 const Cockpit = props => {
   const toggleBtnRef = useRef(null);
 
   useEffect(() => {
     console.log("[Cockpit.js] useEffect");
-    const timer = setTimeout(() => {
-      alert("Saved data to Cloud!");
-    }, 1000);
+    // const timer = setTimeout(() => {
+    //   alert("Saved data to Cloud!");
+    // }, 1000);
     toggleBtnRef.current.click();
     return () => {
-      clearTimeout(timer);
+      // clearTimeout(timer);
       console.log("[Cockpit.js] cleanup work in useEffect");
     };
   }, []);
@@ -45,6 +46,9 @@ const Cockpit = props => {
       <button className={btnClass} ref={toggleBtnRef} onClick={props.click}>
         Switch Name
       </button>
+      <AuthContext.Consumer>
+        {context => <button onClick={context.login}>Log in</button>}
+      </AuthContext.Consumer>
     </div>
   );
 };

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Aux from "../../../hoc/Auxiliary";
 import Auxiliary from "../../../hoc/Auxiliary";
 import WithClass from "../../../hoc/WithClass";
+import AuthContext from "../../../context/auth-context";
 
 const StyledDiv = styled.div`
   width: 60%;
@@ -46,6 +47,11 @@ class Person extends Component {
     console.log("[Person.js] render");
     return (
       <>
+        <AuthContext.Consumer>
+          {context =>
+            context.authenticated ? <p>Authenticated!</p> : <p>Please Log in</p>
+          }
+        </AuthContext.Consumer>
         <p onClick={this.props.click}>
           I'm a {this.props.name} and I am {this.props.age} years old!
         </p>
