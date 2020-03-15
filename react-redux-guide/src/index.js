@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
+import ReduxThunk from "redux-thunk";
 import { Provider } from "react-redux";
 import counterReducer from "./store/reducers/counter";
 import resultReducer from "./store/reducers/result";
@@ -27,7 +28,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
   rootReducer,
-  composeEnhancers(applyMiddleware(logger))
+  composeEnhancers(applyMiddleware(logger, ReduxThunk))
 );
 
 ReactDOM.render(
