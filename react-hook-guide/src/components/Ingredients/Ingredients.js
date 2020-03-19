@@ -7,10 +7,27 @@ import Search from "./Search";
 function Ingredients() {
   const [ingredients, setIngredients] = useState([]);
 
-  const addIngredientHandler = ingredients => {
-    setIngredients(prevState => {
-      return [...prevState, { id: Math.random().toString(), ...ingredients }];
+  const addIngredientHandler = ingredient => {
+    fetch("https://react-hook-update-41c8c.firebaseio.com/ingredients.json", {
+      method: "POST",
+      body: JSON.stringify(ingredient),
+      header: { "Content-Type": "application/json" }
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(responseData => {
+        setIngredients(prevState => {
+          return [...prevState, { id: responseData.name, ...ingredient }];
+        });
+      });
+  };
+
+  const deleteIngredient = id => {
+    const newIngredients = ingredients.filter(ingredient => {
+      return ingredient.id !== id;
     });
+    setIngredients(newIngredients);
   };
 
   return (
@@ -19,7 +36,10 @@ function Ingredients() {
 
       <section>
         <Search />
-        <IngredientList ingredients={ingredients} onRemoveItem={() => {}} />
+        <IngredientList
+          ingredients={ingredients}
+          onRemoveItem={deleteIngredient}
+        />
       </section>
     </div>
   );
