@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useReducer } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useReducer,
+  useMemo
+} from "react";
 
 import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
@@ -64,7 +70,7 @@ function Ingredients() {
     console.log("RENDERING INGREDIENTS", ingredients);
   }, [ingredients]);
 
-  const addIngredientHandler = ingredient => {
+  const addIngredientHandler = useCallback(ingredient => {
     dispatchHttp({ type: "SEND" });
     fetch("https://react-hook-update-41c8c.firebaseio.com/ingredients.json", {
       method: "POST",
@@ -84,9 +90,9 @@ function Ingredients() {
           ingredient: { id: responseData.name, ...ingredient }
         });
       });
-  };
+  }, []);
 
-  const deleteIngredient = id => {
+  const deleteIngredient = useCallback(id => {
     dispatchHttp({ type: "SEND" });
     fetch(
       `https://react-hook-update-41c8c.firebaseio.com/ingredients/${id}.json`,
@@ -105,18 +111,27 @@ function Ingredients() {
       .catch(err => {
         dispatchHttp({ type: "ERROR", errorMessage: "Something Wrong" });
       });
-  };
+  }, []);
 
   const filteredIngredients = useCallback(filteredIngredients => {
     // setIngredients(filteredIngredients);
     dispatch({ type: "SET", ingredient: filteredIngredients });
   }, []);
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     // setError(null);
     // setIsLoading(false);
     dispatchHttp({ type: "CLEAR" });
-  };
+  }, []);
+
+  const ingredientList = useMemo(() => {
+    return (
+      <IngredientList
+        ingredients={ingredients}
+        onRemoveItem={deleteIngredient}
+      />
+    );
+  }, [deleteIngredient, ingredients]);
 
   return (
     <div className="App">
@@ -130,10 +145,7 @@ function Ingredients() {
 
       <section>
         <Search onLoadIngredients={filteredIngredients} />
-        <IngredientList
-          ingredients={ingredients}
-          onRemoveItem={deleteIngredient}
-        />
+        {ingredientList}
       </section>
     </div>
   );
