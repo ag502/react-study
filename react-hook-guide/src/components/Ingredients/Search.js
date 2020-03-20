@@ -8,7 +8,6 @@ const Search = React.memo(props => {
   const [enteredFilter, setEnteredFilter] = useState("");
 
   useEffect(() => {
-    console.log("d");
     const query =
       enteredFilter.length === 0
         ? ""
@@ -26,7 +25,7 @@ const Search = React.memo(props => {
             amount: responseData[key].amount
           });
         }
-        // onLoadIngredients(loadedIngredients);
+        onLoadIngredients(loadedIngredients);
       });
   }, [enteredFilter, onLoadIngredients]);
 
