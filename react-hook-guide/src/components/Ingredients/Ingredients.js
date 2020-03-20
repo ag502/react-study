@@ -10,6 +10,7 @@ import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
 import ErrorModal from "../UI/ErrorModal";
 import Search from "./Search";
+import useHttp from "../../hooks/http";
 
 const ingredientReducer = (currentIngredients, action) => {
   switch (action.type) {
@@ -24,27 +25,17 @@ const ingredientReducer = (currentIngredients, action) => {
   }
 };
 
-const httpReducer = (httpState, action) => {
-  switch (action.type) {
-    case "SEND":
-      return { loading: true, error: null };
-    case "RESPONSE":
-      return { ...httpState, loading: false };
-    case "ERROR":
-      return { loading: false, error: action.errorMessage };
-    case "CLEAR":
-      return { ...httpState, error: null };
-    default:
-      throw new Error("Should not be reached");
-  }
-};
-
 function Ingredients() {
   const [ingredients, dispatch] = useReducer(ingredientReducer, []);
-  const [httpState, dispatchHttp] = useReducer(httpReducer, {
-    loading: false,
-    error: null
-  });
+  const {
+    isLoading,
+    error,
+    data,
+    sendRequest,
+    reqExtra,
+    reqIdentifier
+  } = useHttp();
+
   // const [ingredients, setIngredients] = useState([]);
   // const [isLoading, setIsLoading] = useState(false);
   // const [error, setError] = useState();
@@ -67,51 +58,57 @@ function Ingredients() {
   // }, []);
 
   useEffect(() => {
-    console.log("RENDERING INGREDIENTS", ingredients);
-  }, [ingredients]);
+    if (reqIdentifier === "REMOVE_INGREDIENT") {
+      dispatch({ type: "DELETE", id: reqExtra });
+    } else {
+      dispatch({ type: "ADD", ingredient: { id: data.name, ...reqExtra } });
+    }
+  }, [data, reqExtra, reqIdentifier]);
 
-  const addIngredientHandler = useCallback(ingredient => {
-    dispatchHttp({ type: "SEND" });
-    fetch("https://react-hook-update-41c8c.firebaseio.com/ingredients.json", {
-      method: "POST",
-      body: JSON.stringify(ingredient),
-      header: { "Content-Type": "application/json" }
-    })
-      .then(res => {
-        dispatchHttp({ type: "RESPONSE" });
-        return res.json();
-      })
-      .then(responseData => {
-        // setIngredients(prevState => {
-        //   return [...prevState, { id: responseData.name, ...ingredient }];
-        // });
-        dispatch({
-          type: "ADD",
-          ingredient: { id: responseData.name, ...ingredient }
-        });
-      });
-  }, []);
+  const addIngredientHandler = useCallback(
+    ingredient => {
+      sendRequest(
+        "https://react-hook-update-41c8c.firebaseio.com/ingredients.json",
+        "POST",
+        JSON.stringify(ingredient),
+        ingredient,
+        "ADD_INGREDIENT"
+      );
+      // dispatchHttp({ type: "SEND" });
+      // fetch("https://react-hook-update-41c8c.firebaseio.com/ingredients.json", {
+      //   method: "POST",
+      //   body: JSON.stringify(ingredient),
+      //   header: { "Content-Type": "application/json" }
+      // })
+      //   .then(res => {
+      //     dispatchHttp({ type: "RESPONSE" });
+      //     return res.json();
+      //   })
+      //   .then(responseData => {
+      //     // setIngredients(prevState => {
+      //     //   return [...prevState, { id: responseData.name, ...ingredient }];
+      //     // });
+      //     dispatch({
+      //       type: "ADD",
+      //       ingredient: { id: responseData.name, ...ingredient }
+      //     });
+      //   });
+    },
+    [sendRequest]
+  );
 
-  const deleteIngredient = useCallback(id => {
-    dispatchHttp({ type: "SEND" });
-    fetch(
-      `https://react-hook-update-41c8c.firebaseio.com/ingredients/${id}.json`,
-      {
-        method: "DELETE"
-      }
-    )
-      .then(res => {
-        dispatchHttp({ type: "RESPONSE" });
-        // setIngredients(prevState => {
-        //   setIsLoading(false);
-        //   return prevState.filter(ingredient => ingredient.id !== id);
-        // });
-        dispatch({ type: "DELETE", id: id });
-      })
-      .catch(err => {
-        dispatchHttp({ type: "ERROR", errorMessage: "Something Wrong" });
-      });
-  }, []);
+  const deleteIngredient = useCallback(
+    id => {
+      sendRequest(
+        `https://react-hook-update-41c8c.firebaseio.com/ingredients/${id}.json`,
+        "DELETE",
+        null,
+        id,
+        "REMOVE_INGREDIENT"
+      );
+    },
+    [sendRequest]
+  );
 
   const filteredIngredients = useCallback(filteredIngredients => {
     // setIngredients(filteredIngredients);
@@ -121,7 +118,7 @@ function Ingredients() {
   const clearError = useCallback(() => {
     // setError(null);
     // setIsLoading(false);
-    dispatchHttp({ type: "CLEAR" });
+    // dispatchHttp({ type: "CLEAR" });
   }, []);
 
   const ingredientList = useMemo(() => {
@@ -135,12 +132,10 @@ function Ingredients() {
 
   return (
     <div className="App">
-      {httpState.error && (
-        <ErrorModal onClose={clearError}>{httpState.error}</ErrorModal>
-      )}
+      {error && <ErrorModal onClose={clearError}>{error}</ErrorModal>}
       <IngredientForm
         onAddIngredient={addIngredientHandler}
-        loading={httpState.loading}
+        loading={isLoading}
       />
 
       <section>
