@@ -2,10 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 
 import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
+import ErrorModal from "../UI/ErrorModal";
 import Search from "./Search";
 
 function Ingredients() {
   const [ingredients, setIngredients] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
 
   // useEffect(() => {
   //   console.log("ingredients Rendering");
@@ -29,12 +32,14 @@ function Ingredients() {
   }, [ingredients]);
 
   const addIngredientHandler = ingredient => {
+    setIsLoading(true);
     fetch("https://react-hook-update-41c8c.firebaseio.com/ingredients.json", {
       method: "POST",
       body: JSON.stringify(ingredient),
       header: { "Content-Type": "application/json" }
     })
       .then(res => {
+        setIsLoading(false);
         return res.json();
       })
       .then(responseData => {
@@ -45,19 +50,40 @@ function Ingredients() {
   };
 
   const deleteIngredient = id => {
-    const newIngredients = ingredients.filter(ingredient => {
-      return ingredient.id !== id;
-    });
-    setIngredients(newIngredients);
+    setIsLoading(true);
+    fetch(
+      `https://react-hook-update-41c8c.firebaseio.com/ingredients/${id}.json`,
+      {
+        method: "DELETE"
+      }
+    )
+      .then(res => {
+        setIngredients(prevState => {
+          setIsLoading(false);
+          return prevState.filter(ingredient => ingredient.id !== id);
+        });
+      })
+      .catch(err => {
+        setError(err.message);
+      });
   };
 
   const filteredIngredients = useCallback(filteredIngredients => {
     setIngredients(filteredIngredients);
   }, []);
 
+  const clearError = () => {
+    setError(null);
+    setIsLoading(false);
+  };
+
   return (
     <div className="App">
-      <IngredientForm onAddIngredient={addIngredientHandler} />
+      {error && <ErrorModal onClose={clearError}>{error}</ErrorModal>}
+      <IngredientForm
+        onAddIngredient={addIngredientHandler}
+        loading={isLoading}
+      />
 
       <section>
         <Search onLoadIngredients={filteredIngredients} />
